@@ -30,23 +30,69 @@ func Create(x int, y int, rows ...[]int) ([][]int, error) {
 	return m1, nil
 }
 
-// Returns sum of 2 matrices.
-// Contraints: Matrices must be the same size.
-func Add(m1 [][]int, m2 [][]int) ([][]int, error) {
-	log.Println(fmt.Sprintf("Add: %v + %v", m1, m2))
-	if !CompareSize(m1, m2) {
-		return nil, errors.New("matrices must be the same size")
+// Add() returns a matrix equal to the sum of the augend and the addend.
+func Add(augend [][]int, addend [][]int) ([][]int, error) {
+	log.Println(fmt.Sprintf("Add: %v + %v", augend, addend))
+	if !CompareSize(augend, addend) {
+		return nil, errors.New("Both matrices must be the same size.")
 	}
 
 	m3 := [][]int{}
-	for i := 0; i < len(m1); i++ {
+	for i := 0; i < len(augend); i++ {
 		var temp []int
-		for j := 0; j < len(m1[i]); j++ {
-			temp = append(temp, m1[i][j]+m2[i][j])
+		for j := 0; j < len(augend[i]); j++ {
+			temp = append(temp, augend[i][j]+addend[i][j])
 		}
 		m3 = append(m3, temp)
 	}
 	return m3, nil
+}
+
+// Subtract() returns a matrix equal to the difference of the minuend and the subtrahend.
+func Subtract(minuend [][]int, subtrahend [][]int) (sum [][]int, err error) {
+	log.Println(fmt.Sprintf("Subtract: %v - %v", minuend, subtrahend))
+	if !CompareSize(minuend, subtrahend) {
+		return nil, errors.New("Both matrices must be the same size.")
+	}
+
+	for i := 0; i < len(minuend); i++ {
+		sum = append(sum, []int{})
+		for j := 0; j < len(minuend[i]); j++ {
+			sum[i] = append(sum[i], minuend[i][j]-subtrahend[i][j])
+		}
+	}
+	return
+}
+
+// Multiply returns a matrix equal to the product of the multiplicand and the multiplier.
+func Multiply(multiplicand [][]int, multiplier [][]int) (product [][]int, err error) {
+	log.Printf("\nMultiply: %v x %v\n", multiplicand, multiplier)
+
+	columns, _ := Size(multiplicand)
+	_, rows := Size(multiplier)
+	if columns != rows {
+		return nil, errors.New("The number of columns in the multiplicand must equal the number of rows in the multiplier.")
+	}
+
+	if product, err = Create(rows, columns); err != nil {
+		return nil, err
+	}
+
+	for i := 0; i < len(multiplicand); i++ {
+		for j := 0; j < len(multiplicand[i]); j++ {
+			fmt.Printf("\nc[%v][%v] = ", i, j)
+			for k := 0; k < len(multiplicand[i]); k++ {
+				product[i][j] += multiplicand[i][k] * multiplier[k][j]
+				// fmt.Printf("a[%v][%v] x b[%v][%v]%v", i, k, k, j, func(k int, l int) string {
+				// 	if k < l-1 {
+				// 		return " + "
+				// 	}
+				// 	return ""
+				// }(k, len(multiplicand[i])))
+			}
+		}
+	}
+	return
 }
 
 ///////////////////////////////////////

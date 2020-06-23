@@ -78,6 +78,7 @@ func TestCreateError(t *testing.T) {
 // Arithmetic
 //////////////////////////////////////
 
+// Add()
 func TestAddSuccess(t *testing.T) {
 
 	m1 := [][]int{{1, 1}, {1, 1}}
@@ -114,6 +115,56 @@ func TestAddErrorInequivalentSize(t *testing.T) {
 	_, err := Add(m1, m2)
 
 	assert.Error(t, err, "It should return an error.")
+}
+
+// Subtract()
+func TestSubtractSuccess(t *testing.T) {
+	minuend := [][]int{{5, 5}, {5, 5}}
+	subtrahend := [][]int{{1, 1}, {1, 1}}
+
+	difference, err := Subtract(minuend, subtrahend)
+	assert.NoError(t, err, "Subtract() should not return an error")
+
+	expectedM3 := [][]int{{4, 4}, {4, 4}}
+	assert.Equal(t, expectedM3, difference, fmt.Sprintf("Subtract() should output the difference between the minuend (m1 %v) and the subtrahend (m2 %v). Said output should be (m3 %v).", minuend, subtrahend, difference))
+}
+
+func TestSubtractErrorInequivalentSize(t *testing.T) {
+	minuend := [][]int{{5, 5}, {5, 5}}
+	subtrahend := [][]int{{1, 1}}
+
+	difference, err := Subtract(minuend, subtrahend)
+	assert.Error(t, err, "Subtract() should return an error.")
+	assert.Nil(t, difference, "Subtract() should return a difference of nil.")
+}
+
+// Multiply()
+func TestMultiplySuccess(t *testing.T) {
+	t.Log("Multiply() should return a matrix equal to the product of the multiplicand and the multiplier.")
+
+	var testCases = []struct {
+		multiplicand    [][]int
+		multiplier      [][]int
+		expectedProduct [][]int
+	}{
+		{
+			[][]int{{1, 1}, {1, 1}},
+			[][]int{{2, 2}, {2, 2}},
+			[][]int{{4, 4}, {4, 4}},
+		},
+		{
+			[][]int{{1, 2}, {3, 4}},
+			[][]int{{5, 6}, {7, 8}},
+			[][]int{{19, 22}, {43, 50}},
+		},
+	}
+
+	for _, tc := range testCases {
+		product, err := Multiply(tc.multiplicand, tc.multiplier)
+		assert.NoError(t, err, "Multiply() should not return an error.")
+		assert.Equal(t, tc.expectedProduct, product, fmt.Sprintf("Multiply() should return a matrix equal to the product of the multiplicand (%v) and the multiplier (%v). Said product should be (%v).", tc.multiplicand, tc.multiplier, tc.expectedProduct))
+	}
+
 }
 
 ///////////////////////////////////////
